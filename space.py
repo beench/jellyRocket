@@ -32,10 +32,8 @@ class SpaceGameWindow(arcade.Window):
         self.score = 0
         self.world = World(width, height)
 
-        #self.rocketsp = arcade.Sprite('images/Rocket2.png')
         self.rocketsp = ModelSprite('images/Rocket2.png', model=self.world.rocket)
-        
-        #self.aliensp = arcade.Sprite('images/Alien.png') 
+ฃ
         self.aliensp = ModelSprite('images/Alien.png', model=self.world.alien)
         
         self.all_sprites_list.append(self.rocketsp)
