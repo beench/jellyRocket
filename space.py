@@ -13,27 +13,25 @@ class SpaceGameWindow(arcade.Window):
         super().__init__(width, height)
 
         self.all_sprites_list = arcade.SpriteList()
-        #self.alien_list = None
         self.score = 0
-        #self.rocketsp = None
         self.world = World(width, height)
         arcade.set_background_color(arcade.color.BLACK)
 
         self.rocketsp = arcade.Sprite('images/Rocket2.png')
-        self.world.rocket.x = SCREEN_WIDTH/2
-        self.world.rocket.y = 60
         self.aliensp = arcade.Sprite('images/Alien.png') 
         self.all_sprites_list.append(self.rocketsp)
-        self.alien_list = arcade.SpriteList()
+        self.all_sprites_list.append(self.aliensp)
+        #self.alien_list = arcade.SpriteList()
+        #self.alien_list.append(self.aliensp)
         self.score = 0
 
-    def start_new_game(self):
-        
-        for i in renge(50):
-            aliensp.world.alien.center_x = random.randrange(SCREEN_WIDTH)
-            aliensp.world.alien.center_y = SCREEN_HEIGHT
-            self.all_sprites_list.append(aliensp)
-            self.alien_list.append(aliensp)
+    def start_new_game(self):        
+        for i in range(50):
+            aliensp = self.world.alien
+            #self.aliensp = arcade.Sprite('images/Alien.png')
+            #self.aliensp.set_position(self.world.alien.center_x, self.world.alien.center_y) 
+            aliensp.center_x = random.randrange(SCREEN_WIDTH)
+            aliensp.center_y = SCREEN_HEIGHT
 
     def update(self, delta):
         self.world.update(delta)
@@ -41,8 +39,7 @@ class SpaceGameWindow(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         self.all_sprites_list.draw()
-        #self.rocketsp.set_position(self.world.rocket.x, self.world.rocket.y)
-        #self.rocketsp.draw()
+        self.rocketsp.set_position(self.world.rocket.x, self.world.rocket.y)
         output = "Score: {}".format(self.score)
         arcade.draw_text(output, 10, 600, arcade.color.WHITE, 12)
 
@@ -59,6 +56,7 @@ class SpaceGameWindow(arcade.Window):
  
 def main():
     window = SpaceGameWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window.start_new_game()
     arcade.run()
 
 main()

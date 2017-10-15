@@ -1,18 +1,15 @@
 import random
+import arcade
 
 class Alien():
-    def __init__(self):
+    def reset_pos(self):
         self.center_y = 620
         self.center_x = random.randrange(480)
 
-    '''def reset_pos(self):
-        self.center_y = 620
-        self.center_x = random.randrange(480)'''
-
     def update(self):
         self.center_y -= 1
-        '''if self.top < 0:
-            self.reset_pos()'''
+        if self.center_y < 0:
+            self.reset_pos()
 
 class Rocket:
     def __init__(self, world, x, y):
