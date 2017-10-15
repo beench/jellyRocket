@@ -1,14 +1,28 @@
 import random
 import arcade
 
+class ModelSprite(arcade.Sprite):
+    def __init__(self, *args, **kwargs):
+        self.model = kwargs.pop('model', None)
+ 
+        super().__init__(*args, **kwargs)
+ 
+    def sync_with_model(self):
+        if self.model:
+            self.set_position(self.model.x, self.model.y)
+ 
+    def draw(self):
+        self.sync_with_model()
+        super().draw()
+
 class Alien():
-    def reset_pos(self):
-        self.center_y = 620
-        self.center_x = random.randrange(480)
+    def __init__(self):
+        self.y = 620
+        self.x = random.randrange(480)
 
     def update(self):
-        self.center_y -= 1
-        if self.center_y < 0:
+        self.y -= 1
+        if self.y < 0:
             self.reset_pos()
 
 class Rocket:
