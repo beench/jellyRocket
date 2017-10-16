@@ -28,40 +28,24 @@ class SpaceGameWindow(arcade.Window):
 
         arcade.set_background_color(arcade.color.BLACK)
 
-        self.all_sprites_list = arcade.SpriteList()
         self.score = 0
         self.world = World(width, height)
-
+        self.alien_list = []
         self.rocketsp = ModelSprite('images/Rocket2.png', model=self.world.rocket)
-ฃ
-        self.aliensp = ModelSprite('images/Alien.png', model=self.world.alien)
-        
-        self.all_sprites_list.append(self.rocketsp)
-        self.all_sprites_list.append(self.aliensp)
-        #self.alien_list = arcade.SpriteList()
-        #self.alien_list.append(self.aliensp)
-        self.score = 0
-
-    def start_new_game(self):        
-        for i in range(50):
-            aliensp = self.world.alien
-            #self.aliensp.set_position(self.world.alien.x, self.world.alien.y) 
-            aliensp.x = random.randrange(SCREEN_WIDTH)
-            aliensp.y = SCREEN_HEIGHT
-
+        for alien in self.world.alien_list:    
+            self.alien_list.append(ModelSprite('images/Alien.png', model=alien))
+    
     def update(self, delta):
         self.world.update(delta)
-        #self.rocketsp.set_position(self.world.rocket.x, self.world.rocket.y)
 
     def on_draw(self):
         arcade.start_render()
 
-        #self.all_sprites_list.draw()
-
         self.rocketsp.draw()
-        self.aliensp.draw()
-        #self.rocketsp.set_position(self.world.rocket.x, self.world.rocket.y)
         
+        for alien in  self.alien_list:
+            alien.draw()
+
         output = "Score: {}".format(self.score)
         arcade.draw_text(output, 10, 600, arcade.color.WHITE, 12)
 
@@ -77,7 +61,6 @@ class SpaceGameWindow(arcade.Window):
  
 def main():
     window = SpaceGameWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
-    window.start_new_game()
     arcade.run()
 
 main()
