@@ -1,7 +1,17 @@
 import random
 import arcade
+bullet_speed = 5
 
-class Alien():
+class Bullet:
+    def __init__(self, world):
+        self.x = 0
+        self.y = 0
+        self.world = world
+
+    def update(self):
+        self.y += bullet_speed
+
+class Alien:
     def __init__(self):
         self.y = 620
         self.x = random.randrange(480)
@@ -28,17 +38,33 @@ class Rocket:
             self.delta_x = 0
 
 class World:
+    SCREEN_HEIGHT = 620
+
     def __init__(self, width, height):
         self.width = width
         self.height = height
  
-        self.rocket = Rocket(self, width/2, 60)
+        self.rocket = Rocket(self, width / 2, 60)
         self.alien_list = []
-        self.n = random.randint(2,4)
-        for alien in range(3):
-            self.alien_list.append(Alien()) 
+        self.bullet_list = arcade.SpriteList()
+        self.ispress = False
+        self.bullet_model = []
+        for alien in range(4):
+            self.alien_list.append(Alien())
  
+    def add_bullet(self):
+        bullet = Bullet()
+        self.bullet.append(bullet)
+        return bullet
+
     def update(self, delta):
         self.rocket.move()
         for alien in self.alien_list:
             alien.update()
+
+        for bulletsp in self.bullet_list:
+            bulletsp.model.update()
+            if bulletsp.center_y > World.SCREEN_HEIGHT:
+                self.bullet_model.remove(bulletsp.model)
+                bulletsp.kill()
+        
