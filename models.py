@@ -1,5 +1,6 @@
 import random
 import arcade
+import time
 bullet_speed = 5
 
 class Bullet:
@@ -16,7 +17,6 @@ class Alien:
         self.y = 620
         self.x = random.randrange(480)
         self.speed = random.randrange(2,4)
-
     def update(self):
         self.y -= self.speed
         self.n = random.randint(2,100)

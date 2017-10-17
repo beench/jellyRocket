@@ -26,17 +26,27 @@ class SpaceGameWindow(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height)
 
+        self.backgroud = arcade.load_texture('images/Space.jpg')
         arcade.set_background_color(arcade.color.BLACK)
 
         self.score = 0
         self.world = World(width, height)
-        self.alien_list = []
+        self.alien_list = arcade.SpriteList()
         self.rocketsp = ModelSprite('images/Rocket2.png', 0.9, model=self.world.rocket)
         for alien in self.world.alien_list:    
             self.alien_list.append(ModelSprite('images/Alien.png', 0.8, model = alien))
+        self.hit_list = []
 
     def update(self, delta):
         self.world.update(delta)
+        for bullet in self.world.bullet_list:
+            self.hit_list = arcade.check_for_collision_with_list(bullet, self.alien_list)
+            if len(self.hit_list) > 0:
+                bullet.kill()
+            for alien in self.hit_list:
+                alien.kill()
+                self.score+=5
+
  
     def on_draw(self):
         arcade.start_render()
@@ -47,7 +57,7 @@ class SpaceGameWindow(arcade.Window):
             alien.draw()
 
         for bullet in self.world.bullet_list:
-            bullet.draw())
+            bullet.draw()
 
         output = "Score: {}".format(self.score)
         arcade.draw_text(output, 10, 600, arcade.color.WHITE, 12)
