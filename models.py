@@ -20,8 +20,8 @@ class Alien:
     def update(self):
         self.y -= self.speed
         self.n = random.randint(2,100)
-        if self.y < 0:
-            self.__init__()
+        '''if self.y < 0:
+            self.__init__()'''
 
 class Rocket:
     def __init__(self, world, x, y):
@@ -49,7 +49,10 @@ class World:
         self.bullet_list = arcade.SpriteList()
         self.ispress = False
         self.bullet_model = []
-        for alien in range(4):
+        self.tmplist = []
+        self.numAdd = 1
+        self.status = 0
+        for alien in range(2):
             self.alien_list.append(Alien())
  
     def add_bullet(self):
@@ -67,4 +70,12 @@ class World:
             if bulletsp.center_y > World.SCREEN_HEIGHT:
                 self.bullet_model.remove(bulletsp.model)
                 bulletsp.kill()
+
+        if self.status == 1:
+            for alien in range(self.numAdd):
+                self.tmp = Alien()
+                self.tmplist = []
+                self.tmplist.append(self.tmp)
+                self.alien_list.append(self.tmp)
+            self.status = 0
         

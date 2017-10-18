@@ -8,6 +8,8 @@ SCREEN_HEIGHT = 620
 
 MOVEMENT_SPEED = 5
 
+TIME = 1
+
 class ModelSprite(arcade.Sprite):
         def __init__(self, *args, **kwargs):
             self.model = kwargs.pop('model', None)
@@ -27,7 +29,8 @@ class SpaceGameWindow(arcade.Window):
         super().__init__(width, height)
 
         self.backgroud = arcade.load_texture('images/Space.jpg')
-        arcade.set_background_color(arcade.color.BLACK)
+        arcade.draw_texture_rectangle(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH, SCREEN_HEIGHT, self.backgroud)
+        
 
         self.score = 0
         self.world = World(width, height)
@@ -36,9 +39,12 @@ class SpaceGameWindow(arcade.Window):
         for alien in self.world.alien_list:    
             self.alien_list.append(ModelSprite('images/Alien.png', 0.8, model = alien))
         self.hit_list = []
+        self.counttime = 0
+        self.target = 50
 
     def update(self, delta):
-        self.world.update(delta)
+        self.counttime += delta 
+
         for bullet in self.world.bullet_list:
             self.hit_list = arcade.check_for_collision_with_list(bullet, self.alien_list)
             if len(self.hit_list) > 0:
@@ -46,8 +52,18 @@ class SpaceGameWindow(arcade.Window):
             for alien in self.hit_list:
                 alien.kill()
                 self.score+=5
+        if self.counttime >= TIME:
+            self.world.status = 1
+            if self.score > self.target:
+                self.world.numAdd += 1
+            self.target += 50
+            self.counttime = 0
+        for alien in self.world.tmplist:
+            self.alien_list.append(ModelSprite('images/Alien.png', 0.8, model = alien))
+        self.world.tmplist = []
 
- 
+        self.world.update(delta)
+        
     def on_draw(self):
         arcade.start_render()
 
