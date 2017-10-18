@@ -1,12 +1,14 @@
 import arcade
 import random
 
-from modeltmp import Rocket, World, Alien
+from modeltmp import Rocket, World, Alien, Bullet
 
 SCREEN_WIDTH = 480
 SCREEN_HEIGHT = 620
 
 MOVEMENT_SPEED = 5
+
+TIME = 0.5
 
 class ModelSprite(arcade.Sprite):
         def __init__(self, *args, **kwargs):
@@ -17,7 +19,7 @@ class ModelSprite(arcade.Sprite):
         def sync_with_model(self):
             if self.model:
                 self.set_position(self.model.x, self.model.y)
- 
+
         def draw(self):
             self.sync_with_model()
             super().draw()
@@ -26,17 +28,43 @@ class SpaceGameWindow(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height)
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.backgroud = arcade.load_texture('images/Space.jpg')
+        arcade.draw_texture_rectangle(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH, SCREEN_HEIGHT, self.backgroud)
+        
 
         self.score = 0
         self.world = World(width, height)
-        self.alien_list = []
-        self.rocketsp = ModelSprite('images/Rocket2.png', model=self.world.rocket)
+        self.alien_list = arcade.SpriteList()
+        self.rocketsp = ModelSprite('images/Rocket2.png', 0.9, model=self.world.rocket)
         for alien in self.world.alien_list:    
-            self.alien_list.append(ModelSprite('images/Alien.png', model = alien))
-        self.bullet_list = []
+            self.alien_list.append(ModelSprite('images/Alien.png', 0.8, model = alien))
+        self.hit_list = []
+        self.counttime = 0
+        self.target = 50
 
     def update(self, delta):
+        self.counttime += delta 
+
+        for bullet in self.world.bullet_list:
+            self.hit_list = arcade.check_for_collision_with_list(bullet, self.alien_list)
+            if len(self.hit_list) > 0:
+                bullet.kill()
+            for alien in self.hit_list:
+                alien.kill()
+                self.score+=5
+
+        if self.counttime >= TIME:
+            self.world.status = 1
+            if self.score > self.target:
+                self.world.numAdd += 1
+            self.target += 50
+            self.counttime = 0
+
+        for alien in self.world.tmplist:
+            self.alien_list.append(ModelSprite('images/Alien.png', 0.8, model = alien))
+        
+        self.world.tmplist = []
+
         self.world.update(delta)
 
     def on_draw(self):
@@ -44,11 +72,27 @@ class SpaceGameWindow(arcade.Window):
 
         self.rocketsp.draw()
         
-        for alien in  self.alien_list:
+        for alien in self.alien_list:
             alien.draw()
+            if alien.model.y <= 0:
+                '''go = arcade.Sprite('images/GameOver.png',0.8)
+                go.set_position(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+                go.draw()'''
+                output1 = "Game Over"
+                arcade.draw_text(output1, 100, 320, arcade.color.WHITE, 46)
+                output2 = "Score: {}".format(self.score)
+                arcade.draw_text(output2, 200, 290, arcade.color.WHITE, 20) 
 
-        #self.bulletsp.draw()
-        for bullet in self.bullet_list:
+            
+       
+        '''for alien in self.world.alien_list:
+            if alien.y <= 0:
+                output1 = "Game Over"
+                arcade.draw_text(output1, 100, 320, arcade.color.WHITE, 46)
+                output2 = "Score: {}".format(self.score)
+                arcade.draw_text(output2, 200, 290, arcade.color.WHITE, 20)'''
+
+        for bullet in self.world.bullet_list:
             bullet.draw()
 
         output = "Score: {}".format(self.score)
@@ -61,9 +105,12 @@ class SpaceGameWindow(arcade.Window):
             self.world.rocket.delta_x = MOVEMENT_SPEED
         
         if key == arcade.key.SPACE:
-            for bullet in self.world.bullet_list:
-                self.bullet_list.append(ModelSprite("images/bullet.png", model = bullet))
-            
+            bullet = Bullet(self.world)
+            bullet.x = self.world.rocket.x
+            bullet.y = self.world.rocket.y + 10
+            self.world.bullet_model.append(bullet)
+            bullet_sprite = ModelSprite("images/bullet.png",0.5, model = bullet)
+            self.world.bullet_list.append(bullet_sprite)
 
     def on_key_release(self, key, modifiers):
         if key == arcade.key.LEFT or key == arcade.key.RIGHT:

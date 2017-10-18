@@ -1,26 +1,28 @@
 import random
 import arcade
+import time
+bullet_speed = 5
 
-class Bullet():
-    def __init__(self, rocket):
-        self.bullet_speed = 5
-        self.x = rocket.x
-        self.y = rocket.y
+class Bullet:
+    def __init__(self, world):
+        self.x = 0
+        self.y = 0
+        self.world = world
 
     def update(self):
-        self.y += self.bullet_speed
+        self.y += bullet_speed
 
-class Alien():
+class Alien:
     def __init__(self):
         self.y = 620
         self.x = random.randrange(480)
-        self.speed = random.randrange(2,4)
-
+        self.speed = random.randrange(2,5)
     def update(self):
         self.y -= self.speed
         self.n = random.randint(2,100)
+        
         if self.y < 0:
-            self.__init__()
+            self.y = 0
 
 class Rocket:
     def __init__(self, world, x, y):
@@ -37,22 +39,44 @@ class Rocket:
             self.delta_x = 0
 
 class World:
+    SCREEN_HEIGHT = 620
+
     def __init__(self, width, height):
         self.width = width
         self.height = height
  
-        self.rocket = Rocket(self, width/2, 60)
+        self.rocket = Rocket(self, width / 2, 60)
         self.alien_list = []
-        self.bullet_list = []
-        self.n = random.randint(2,4)
-        for alien in range(3):
+        self.bullet_list = arcade.SpriteList()
+        self.ispress = False
+        self.bullet_model = []
+        self.tmplist = []
+        self.numAdd = 1
+        self.status = 0
+        for alien in range(1):
             self.alien_list.append(Alien())
-        for bullet in range(20): 
-            self.bullet_list.append(Bullet(self.rocket))
  
+    def add_bullet(self):
+        bullet = Bullet()
+        self.bullet.append(bullet)
+        return bullet
+
     def update(self, delta):
         self.rocket.move()
         for alien in self.alien_list:
             alien.update()
-        for bullet in self.bullet_list:
-            bullet.update()
+
+        for bulletsp in self.bullet_list:
+            bulletsp.model.update()
+            if bulletsp.center_y > World.SCREEN_HEIGHT:
+                self.bullet_model.remove(bulletsp.model)
+                bulletsp.kill()
+
+        if self.status == 1:
+            for alien in range(self.numAdd):
+                self.tmp = Alien()
+                self.tmplist = []
+                self.tmplist.append(self.tmp)
+                self.alien_list.append(self.tmp)
+            self.status = 0
+        

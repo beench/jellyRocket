@@ -8,7 +8,7 @@ SCREEN_HEIGHT = 620
 
 MOVEMENT_SPEED = 5
 
-TIME = 1
+TIME = 0.5
 
 class ModelSprite(arcade.Sprite):
         def __init__(self, *args, **kwargs):
@@ -52,25 +52,33 @@ class SpaceGameWindow(arcade.Window):
             for alien in self.hit_list:
                 alien.kill()
                 self.score+=5
+
         if self.counttime >= TIME:
             self.world.status = 1
             if self.score > self.target:
                 self.world.numAdd += 1
             self.target += 50
             self.counttime = 0
+
         for alien in self.world.tmplist:
             self.alien_list.append(ModelSprite('images/Alien.png', 0.8, model = alien))
+        
         self.world.tmplist = []
 
         self.world.update(delta)
-        
+
     def on_draw(self):
         arcade.start_render()
 
         self.rocketsp.draw()
         
-        for alien in  self.alien_list:
+        for alien in self.alien_list:
             alien.draw()
+            if alien.model.y <= 0:
+                output1 = "Game Over"
+                arcade.draw_text(output1, 100, 320, arcade.color.WHITE, 46)
+                output2 = "Score: {}".format(self.score)
+                arcade.draw_text(output2, 190, 290, arcade.color.WHITE, 20) 
 
         for bullet in self.world.bullet_list:
             bullet.draw()
