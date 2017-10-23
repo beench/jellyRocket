@@ -41,7 +41,7 @@ class SpaceGameWindow(arcade.Window):
         self.hit_list = []
         self.counttime = 0
         self.target = 50
-        self.life = 2
+        self.life = 3
 
     def update(self, delta):
         self.counttime += delta 
@@ -61,6 +61,9 @@ class SpaceGameWindow(arcade.Window):
             self.target += 50
             self.counttime = 0
 
+        if (self.score+5)%250 == 0:
+            self.life += 1
+
         for alien in self.world.tmplist:
             self.alien_list.append(ModelSprite('images/Alien.png', 0.8, model = alien))
         
@@ -71,6 +74,8 @@ class SpaceGameWindow(arcade.Window):
                 alien.kill()
                 self.life -= 1
                 print(self.life)
+                if self.life < 0:
+                    self.life = 0
 
         self.world.update(delta)
 
@@ -81,9 +86,6 @@ class SpaceGameWindow(arcade.Window):
         
         for alien in self.alien_list:
             alien.draw()
-            #if alien.model.y <= 0:
-                #self.life -= 1
-                #print(self.life)
             if self.life <= 0:
                 output1 = "Game Over"
                 arcade.draw_text(output1, 100, 320, arcade.color.WHITE, 46)
@@ -92,6 +94,9 @@ class SpaceGameWindow(arcade.Window):
 
         for bullet in self.world.bullet_list:
             bullet.draw()
+
+        output = "life: {}".format(self.life)
+        arcade.draw_text(output, 400, 600, arcade.color.WHITE, 12)    
 
         output = "Score: {}".format(self.score)
         arcade.draw_text(output, 10, 600, arcade.color.WHITE, 12)
