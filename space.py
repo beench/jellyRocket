@@ -41,7 +41,7 @@ class SpaceGameWindow(arcade.Window):
         self.hit_list = []
         self.counttime = 0
         self.target = 50
-        self.life = 3
+        self.life = 2
 
     def update(self, delta):
         self.counttime += delta 
@@ -61,7 +61,7 @@ class SpaceGameWindow(arcade.Window):
             self.target += 50
             self.counttime = 0
 
-        if (self.score+5)%250 == 0:
+        if (self.score+5)%245 == 0:
             self.life += 1
 
         for alien in self.world.tmplist:
