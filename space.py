@@ -61,8 +61,9 @@ class SpaceGameWindow(arcade.Window):
             self.target += 50
             self.counttime = 0
 
-        if (self.score+5)%245 == 0:
+        if (self.score+5)%255 == 0:
             self.life += 1
+            self.score += 10
 
         for alien in self.world.tmplist:
             self.alien_list.append(ModelSprite('images/Alien.png', 0.8, model = alien))
