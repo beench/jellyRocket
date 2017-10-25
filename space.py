@@ -6,7 +6,7 @@ from models import Rocket, World, Alien, Bullet
 SCREEN_WIDTH = 480
 SCREEN_HEIGHT = 620
 
-MOVEMENT_SPEED = 5
+MOVEMENT_SPEED = 4
 
 TIME = 0.5
 
@@ -82,6 +82,8 @@ class SpaceGameWindow(arcade.Window):
 
     def on_draw(self):
         arcade.start_render()
+
+        arcade.draw_texture_rectangle(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH, SCREEN_HEIGHT+70, self.backgroud)
 
         self.rocketsp.draw()
         
