@@ -74,7 +74,7 @@ class SpaceGameWindow(arcade.Window):
             if alien.model.y <= 0:
                 alien.kill()
                 self.life -= 1
-                print(self.life)
+                #print(self.life)
                 if self.life < 0:
                     self.life = 0
 
